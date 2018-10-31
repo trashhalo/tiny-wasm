@@ -6,7 +6,7 @@ import (
 	"bytes"
 	"image"
 	"image/color"
-	"image/jpeg"
+	"image/png"
 )
 
 type Message int
@@ -19,7 +19,7 @@ func main() {
 	buf = bytes.NewBuffer(back)
 	img := image.NewRGBA(image.Rect(0, 0, 100, 50))
 	img.Set(2, 3, color.RGBA{255, 0, 0, 255})
-	jpeg.Encode(buf, img, nil)
+	png.Encode(buf, img, nil)
 	println(buf.Bytes())
 }
 

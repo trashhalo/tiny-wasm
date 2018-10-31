@@ -4,38 +4,34 @@ package main
 
 import (
 	"bytes"
+	"image"
+	"image/color"
+	"image/jpeg"
 )
 
 type Message int
 
-const (
-	Draw Message = iota
-)
-
 var back []byte
-var page *bytes.Buffer
+var buf *bytes.Buffer
 
 func main() {
-	back = make([]byte, 256)
-	page = bytes.NewBuffer(back)
-	updatePage(0, 0)
+	back = make([]byte, 0)
+	buf = bytes.NewBuffer(back)
+	img := image.NewRGBA(image.Rect(0, 0, 100, 50))
+	img.Set(2, 3, color.RGBA{255, 0, 0, 255})
+	jpeg.Encode(buf, img, nil)
+	println(buf.Bytes())
 }
 
-// CommonWA: message
-func _Cfunc_message(Message, *byte, int)
+type JsData struct {
+	len   int
+	start *byte
+}
 
-//go:export mouse
-func updatePage(x, y int) {
-	page.Truncate(0)
-	page.WriteString("<div style=\"")
-	page.WriteString("position:absolute;")
-	page.WriteString("width:50px;")
-	page.WriteString("height:50px;")
-	page.WriteString("background:red;")
-	page.WriteString("left:")
-	page.WriteString("0")
-	page.WriteString("px;top:")
-	page.WriteString("0")
-	page.WriteString("px;\"></div>")
-	_Cfunc_message(Draw, &(back[0]), page.Len())
+//go:export image
+func imageData() JsData {
+	return JsData{
+		buf.Len(),
+		&(back[0]),
+	}
 }
